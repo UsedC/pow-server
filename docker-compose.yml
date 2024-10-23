@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ServerDockerfile
+    container_name: pow-server
+    command: ["-address=0.0.0.0:3333", "-difficulty=4"]
+    ports:
+      - "3333:3333"
+    networks:
+      - pow-network
+
+  client:
+    build:
+      context: .
+      dockerfile: ClientDockerfile
+    container_name: pow-client
+    command: ["-server=server:3333", "-n=5"]
+    depends_on:
+      - server
+    networks:
+      - pow-network
+
+networks:
+  pow-network:
+    driver: bridge
